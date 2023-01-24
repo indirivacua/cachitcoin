@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Blockchain</title>
+</head>
+<body>
+  <table>
+    <thead>
+      <tr>
+        <th>Timestamp</th>
+        <th>Data</th>
+        <th>Previous Hash</th>
+        <th>Hash</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for block in blockchain %}
+        <tr>
+          <td>{{ block.timestamp }}</td>
+          <td>{{ block.data }}</td>
+          <td>{{ block.previous_hash }}</td>
+          <td>{{ block.hash }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>
