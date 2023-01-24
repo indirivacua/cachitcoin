@@ -20,5 +20,12 @@ def transaction():
     wallet.send_transaction(transaction, miner)
     return 'Transaction posted'
 
+@app.route('/is_valid', methods=['GET'])
+def is_valid():
+    if miner.blockchain.is_valid():
+        return "Blockchain is valid"
+    else:
+        return "Blockchain is not valid"
+
 if __name__ == '__main__':
     app.run(debug=True)
