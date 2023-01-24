@@ -1,19 +1,21 @@
 import hashlib
 import datetime
-from miner import Miner
 
 class Block:
-    def __init__(self, timestamp, data, previous_hash, nonce=0, miner=None):
+    def __init__(self, timestamp, data, previous_hash, nonce=0, miner=None, transactions=None):
         self.timestamp = timestamp
         self.data = data
         self.previous_hash = previous_hash
         self.nonce = nonce
         self.miner = miner
+        self.transactions = transactions or []
+        self.number_of_transactions = len(self.transactions)
         self.hash = self.calc_hash()
 
     def calc_hash(self):
         sha = hashlib.sha256()
-        hash_str = f"{self.timestamp}-{self.data}-{self.previous_hash}-{self.nonce}-{self.miner}".encode('utf-8')
+        transactions_str = '-'.join([str(tx) for tx in self.transactions])
+        hash_str = f"{self.timestamp}-{self.data}-{self.previous_hash}-{self.nonce}-{self.miner}-{transactions_str}-{self.number_of_transactions}".encode('utf-8')
         sha.update(hash_str)
         return sha.hexdigest()
 
@@ -28,20 +30,21 @@ class Blockchain:
     def create_genesis_block(self):
         return Block("01/01/1970", "Genesis block", "0")
 
-    def add_block(self, data, miner):
+    def add_block(self, data, miner, transactions):
         previous_hash = self.blockchain[-1].hash
         timestamp = datetime.datetime.now()
         nonce = 0
-        new_block = Block(timestamp, data, previous_hash, nonce, miner)
+        # TODO check if sender have enough balance
+        new_block = Block(timestamp, data, previous_hash, nonce, miner, transactions)
         new_block.hash = new_block.calc_hash()
         while not new_block.hash.startswith('0' * self.difficulty):
             nonce += 1
-            new_block = Block(timestamp, data, previous_hash, nonce, miner)
+            new_block = Block(timestamp, data, previous_hash, nonce, miner, transactions)
             new_block.hash = new_block.calc_hash()
         self.blockchain.append(new_block)
         self.block_count += 1
         if self.block_count % self.halving_interval == 0:
-            self.coin_reward = self.coin_reward // 2
+            self.coin_reward = self.coin_reward / 2
         # Give the miner the coin reward
         miner.add_coins(self.coin_reward)
 
@@ -54,13 +57,3 @@ class Blockchain:
             if current_block.previous_hash != previous_block.hash:
                 return False
         return True
-
-if __name__ == "__main__":
-  b = Blockchain()
-  m = Miner("cacho")
-
-  b.add_block("second block", m)
-  b.add_block("third block", m)
-
-  print(b.is_valid())
-  print(b.block_count, m.balance)
