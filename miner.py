@@ -30,16 +30,14 @@ class Wallet:
 class Miner:
     def __init__(self, name):
         self.name = name
-        self.balance = 0
+        self.wallet = Wallet()
         self.transactions = []
+        # TODO get the longest chain (like torrent protocol)
         self.blockchain = Blockchain()
-
-    def add_coins(self, amount):
-        self.balance += amount
 
     def add_transaction(self, transaction):
         self.transactions.append(transaction)
-        if len(self.transactions) >= 1024:
+        if len(self.transactions) >= 2:#1024:
             self.blockchain.add_block("", self, self.transactions)
             self.transactions = []
 
@@ -48,6 +46,7 @@ if __name__ == "__main__":
   w2 = Wallet()
   m = Miner("cacho")
 
+  # TODO transactions should be sent to a pool where miners look for them
   for i in range(1024):
     t1 = w1.create_transaction(w2.public_key, 1/(i+1))
     w1.send_transaction(t1, m)

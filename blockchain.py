@@ -34,6 +34,10 @@ class Blockchain:
         previous_hash = self.blockchain[-1].hash
         timestamp = datetime.datetime.now()
         nonce = 0
+        # Give the miner the coin reward
+        transactions.append(
+          miner.wallet.create_transaction(miner.wallet.public_key.to_string().hex(), self.coin_reward)
+        )
         # TODO check if sender have enough balance
         new_block = Block(timestamp, data, previous_hash, nonce, miner, transactions)
         new_block.hash = new_block.calc_hash()
@@ -45,8 +49,6 @@ class Blockchain:
         self.block_count += 1
         if self.block_count % self.halving_interval == 0:
             self.coin_reward = self.coin_reward / 2
-        # Give the miner the coin reward
-        miner.add_coins(self.coin_reward)
 
     def is_valid(self):
         for i in range(1, len(self.blockchain)):

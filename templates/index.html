@@ -11,6 +11,7 @@
         <th>Data</th>
         <th>Previous Hash</th>
         <th>Hash</th>
+        <th>Transactions</th>
       </tr>
     </thead>
     <tbody>
@@ -20,9 +21,17 @@
           <td>{{ block.data }}</td>
           <td>{{ block.previous_hash }}</td>
           <td>{{ block.hash }}</td>
+          <td>{{ block.transactions }}</td>
         </tr>
       {% endfor %}
     </tbody>
   </table>
+  <form action="/transaction" method="POST">
+    <label for="recipient">Recipient:</label>
+    <input type="text" id="recipient" name="recipient">
+    <label for="amount">Amount:</label>
+    <input type="number" id="amount" name="amount">
+    <input type="submit" value="Post transaction">
+  </form>
 </body>
 </html>
