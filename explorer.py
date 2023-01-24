@@ -7,9 +7,13 @@ app = Flask(__name__)
 wallet = Wallet()
 miner = Miner(uuid.UUID(int=uuid.getnode()))
 
+# miner.blockchain.add_block("", miner, [
+#     miner.wallet.create_transaction(wallet.public_key.to_string().hex(), 150)
+# ])
+
 @app.route('/')
 def index():
-    return render_template('index.html', blockchain=miner.blockchain.blockchain)
+    return render_template('index.html', public_key=wallet.public_key, blockchain=miner.blockchain.blockchain)
 
 @app.route('/transaction', methods=['POST'])
 def transaction():

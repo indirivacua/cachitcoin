@@ -34,11 +34,11 @@ class Blockchain:
         previous_hash = self.blockchain[-1].hash
         timestamp = datetime.datetime.now()
         nonce = 0
+        # TODO check if sender have enough balance
         # Give the miner the coin reward
         transactions.append(
           miner.wallet.create_transaction(miner.wallet.public_key.to_string().hex(), self.coin_reward)
         )
-        # TODO check if sender have enough balance
         new_block = Block(timestamp, data, previous_hash, nonce, miner, transactions)
         new_block.hash = new_block.calc_hash()
         while not new_block.hash.startswith('0' * self.difficulty):

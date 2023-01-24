@@ -19,7 +19,7 @@ class Wallet:
             'recipient': recipient,
             'amount': amount
         }
-        # sign the transaction
+        # Sign the transaction
         signature = self.private_key.sign(str(transaction).encode())
         transaction['signature'] = signature.hex()
         return transaction
@@ -32,7 +32,7 @@ class Miner:
         self.name = name
         self.wallet = Wallet()
         self.transactions = []
-        # TODO get the longest chain (like torrent protocol)
+        # TODO get the longest blockchain (like torrent protocol)
         self.blockchain = Blockchain()
 
     def add_transaction(self, transaction):
@@ -63,5 +63,4 @@ if __name__ == "__main__":
     )
 
   print(m.blockchain.is_valid())
-  print(m.blockchain.block_count, m.balance)
-  
+  print(m.blockchain.block_count)
