@@ -1,5 +1,6 @@
 import hashlib
 import datetime
+import ecdsa
 
 class Block:
     def __init__(self, timestamp, data, previous_hash, nonce=0, miner=None, transactions=None):
@@ -34,6 +35,17 @@ class Blockchain:
         previous_hash = self.blockchain[-1].hash
         timestamp = datetime.datetime.now()
         nonce = 0
+        # Verify the signature of the transactions
+        for tx in transactions:
+            try:
+                sender_bytes = bytes.fromhex(tx['sender'])
+                vk = ecdsa.VerifyingKey.from_string(sender_bytes, curve=ecdsa.SECP256k1)
+                tx_nosign = {k:v for k,v in tx.items() if k != "signature"}
+                sign_bytes = bytes.fromhex(tx["signature"])
+                #sign_bytes += b"\x04" #test error
+                vk.verify(sign_bytes, str(tx_nosign).encode())
+            except ecdsa.BadSignatureError:
+                return
         # TODO check if sender have enough balance
         # Give the miner the coin reward
         transactions.append(
